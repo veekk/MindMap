@@ -41,19 +41,33 @@ public class MindMapViewFragment extends Fragment {
             public void onClick(View v) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 final View dView = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_el, null);
-                builder.setView(dView)
+                final int[] shape = {0};
+                final CharSequence[] shapes = {" Rectangle "," Circle "," Triangle "};
+                builder.setSingleChoiceItems(shapes, -1, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case 0:
+                                        shape[0] = Shape.RECTANGLE;
+                                        break;
+
+                                    case 1:
+                                        shape[0] = Shape.CIRCLE;
+                                        break;
+
+                                    case 2:
+                                        shape[0] = Shape.TRIANGLE;
+                                        break;
+
+                                }
+                            }
+                        })
+                        .setTitle("Adding element")
                         .setCancelable(true)
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                int shape = 0;
-                                RadioButton rbRect = (RadioButton) dView.findViewById(R.id.rbRect);
-                                RadioButton rbCircle = (RadioButton) dView.findViewById(R.id.rbCircle);
-                                RadioButton rbTriangle = (RadioButton) dView.findViewById(R.id.rbCircle);
-                                if (rbRect.isChecked() == true) shape = Shape.RECTANGLE; else
-                                if (rbCircle.isChecked() == true) shape = Shape.CIRCLE; else
-                                shape = Shape.TRIANGLE;
-                                elements.addElement(new MindMapElement(1, "13", shape, Color.BLUE, 330, 330, 322, 322));
+                                elements.addElement(new MindMapElement(1, "13", shape[0], Color.BLUE, 330, 330, 322, 322));
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -66,6 +80,8 @@ public class MindMapViewFragment extends Fragment {
 
             }
         });
+
     }
+
 
 }
