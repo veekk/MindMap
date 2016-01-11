@@ -12,9 +12,8 @@ import java.util.Random;
 public class MindMapModel implements Serializable{
     ArrayList<MindMapElement> elements = new ArrayList<>();
     long id;
+    String name;
     int backgroundColor;
-
-    final Random random = new Random();
 
 //    public MindMapModel(ArrayList<MindMapElement> elements, long id, int backgroundColor) {
 //        this.elements = elements;
@@ -22,9 +21,9 @@ public class MindMapModel implements Serializable{
 //        this.backgroundColor = backgroundColor;
 //    }
 
-    public MindMapModel(long id) {
-        //this.elements = elements;
+    public MindMapModel(String name, long id) {
         this.id = id;
+        this.name = name;
         this.backgroundColor = Color.WHITE;
     }
 
@@ -39,12 +38,20 @@ public class MindMapModel implements Serializable{
     }
 
     public void addElement(int x, int y, int shape, String text, int color, int width, int height){
-        long id = random.nextInt(10000);
+        long id = System.currentTimeMillis();
         elements.add(new MindMapElement(id, text, color, shape, x, y, width, height));
     }
 
     public long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ArrayList<MindMapElement> getElements() {
+        return elements;
     }
 
     public int getBackgroundColor() {

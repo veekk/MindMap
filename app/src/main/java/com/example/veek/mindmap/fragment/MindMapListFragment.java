@@ -17,7 +17,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.veek.mindmap.R;
+import com.example.veek.mindmap.model.Account;
 import com.example.veek.mindmap.model.MindMapModel;
+import com.example.veek.mindmap.util.AccountManager;
 import com.example.veek.mindmap.util.MindMapAdapter;
 import com.example.veek.mindmap.util.Serializabler;
 
@@ -46,6 +48,7 @@ public class MindMapListFragment extends Fragment {
         adapter = new MindMapAdapter(getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter.initData(AccountManager.getInstance().getCurrentAccount().getMaps());
         setHasOptionsMenu(true);
     }
 
@@ -67,8 +70,9 @@ public class MindMapListFragment extends Fragment {
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                MindMapModel model = new MindMapModel(id);
                                 EditText etMmnAdd = (EditText) dView.findViewById(R.id.etMmnadd);
+                                MindMapModel model = new MindMapModel(etMmnAdd.getText().toString(), id);
+                                AccountManager.getInstance().addMindMap(model.getId(), model.getName());
                                 try {
                                     Serializabler.saveObject(model, getActivity());
                                 } catch (IOException e) {
@@ -85,8 +89,6 @@ public class MindMapListFragment extends Fragment {
                             }
                         })
                         .show();
-                ArrayList<MindMapModel> models = new ArrayList<>();
-
         }
         return true;
     }

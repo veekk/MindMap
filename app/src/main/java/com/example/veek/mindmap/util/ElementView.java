@@ -22,6 +22,10 @@ public class ElementView extends View {
     MindMapElement element;
     Path triangle = new Path();
 
+    public long getElementId() {
+        return element.getId();
+    }
+
     public ElementView(Context context, MindMapElement element) {
         super(context);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(element.getWidth(), element.getHeight());

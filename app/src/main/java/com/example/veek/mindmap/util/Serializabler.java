@@ -1,6 +1,7 @@
 package com.example.veek.mindmap.util;
 
 import android.content.Context;
+import android.util.Base64;
 
 import com.example.veek.mindmap.model.MindMapModel;
 
@@ -15,8 +16,9 @@ import java.io.ObjectOutputStream;
  */
 public class Serializabler {
     public static void saveObject(MindMapModel model, Context context) throws IOException{
-        String filename = "map_"+model.getId()+".vmm";
-        FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
+        String filenameReal = String.valueOf(model.getId()) + "_" + model.getName();
+        String filenameCoded = Base64.encodeToString(filenameReal.getBytes(), Base64.URL_SAFE);
+        FileOutputStream fos = context.openFileOutput(filenameCoded, Context.MODE_PRIVATE);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(model);
         oos.flush();
@@ -24,7 +26,9 @@ public class Serializabler {
     }
 
     public static MindMapModel loadObject(long id, Context context)  throws IOException, ClassNotFoundException{
-        String filename = "map_"+id+".vmm";
+        String mapName = AccountManager.getInstance().getCurrentAccount().getMapNameById(id);
+        String filenameReal = String.valueOf(id) + "_" + mapName;
+        String filename = Base64.encodeToString(filenameReal.getBytes(), Base64.URL_SAFE);
         FileInputStream fis = context.openFileInput(filename);
         ObjectInputStream oin = new ObjectInputStream(fis);
         return (MindMapModel) oin.readObject();

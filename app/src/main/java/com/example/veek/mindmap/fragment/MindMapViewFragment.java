@@ -4,18 +4,21 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 
 import com.example.veek.mindmap.R;
 import com.example.veek.mindmap.descr.Shape;
 import com.example.veek.mindmap.model.MindMapElement;
+import com.example.veek.mindmap.model.MindMapModel;
+import com.example.veek.mindmap.util.AccountManager;
 import com.example.veek.mindmap.util.ElementContainer;
+import com.example.veek.mindmap.util.Serializabler;
+
+import java.io.IOException;
 
 /**
  * Crafted by veek on 21.12.15 with love ♥
@@ -23,18 +26,36 @@ import com.example.veek.mindmap.util.ElementContainer;
 public class MindMapViewFragment extends Fragment {
 
     View rootView;
-    ElementContainer elements;
+    ElementContainer elementViewGroup;
+    MindMapModel mmModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.mind_map_fragment, null);
+        Bundle bundle = getArguments();
+        try {
+            mmModel = Serializabler.loadObject(bundle.getLong("id"), getActivity());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        elements = (ElementContainer) rootView.findViewById(R.id.elementContainer);
+        final float x,y;
+        elementViewGroup = (ElementContainer) rootView.findViewById(R.id.elementContainer);
+        if (mmModel != null) {
+            elementViewGroup.setMmModel(mmModel);
+            for (MindMapElement element :
+                    mmModel.getElements()) {
+                elementViewGroup.addElement(element);
+            }
+        }
+
         FloatingActionButton fabAdd = (FloatingActionButton) rootView.findViewById(R.id.fab_add);
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +88,9 @@ public class MindMapViewFragment extends Fragment {
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                elements.addElement(new MindMapElement(1, "13", shape[0], Color.BLUE, 330, 330, 322, 322));
+                                MindMapElement element = new MindMapElement(1, "13", shape[0], Color.BLUE, 330, 330, 322, 322);
+                                mmModel.getElements().add(element);
+                                elementViewGroup.addElement(element);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -84,4 +107,14 @@ public class MindMapViewFragment extends Fragment {
     }
 
 
+
+    @Override
+    public void onPause() {
+        try {
+            Serializabler.saveObject(mmModel, getActivity());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onPause();
+    }
 }
