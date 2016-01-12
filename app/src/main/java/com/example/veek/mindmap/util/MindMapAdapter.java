@@ -76,7 +76,7 @@ public class MindMapAdapter extends RecyclerView.Adapter<MindMapAdapter.MapViewH
                 final int pos = viewHolder.getAdapterPosition();
                 final ListModel model = content.get(pos);
 
-                Snackbar.make(rootView, "DELETED MOTHERF", Snackbar.LENGTH_LONG).setCallback(new Snackbar.Callback() {
+                Snackbar.make(rootView, "DELETED", Snackbar.LENGTH_LONG).setCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
                         if (event != DISMISS_EVENT_ACTION && event != DISMISS_EVENT_MANUAL) {
