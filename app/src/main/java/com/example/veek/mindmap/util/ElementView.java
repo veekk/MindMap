@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,6 +20,7 @@ public class ElementView extends View {
 
     Paint paint_fill = new Paint();
     Paint paint_stroke = new Paint();
+    Paint paint = new Paint();
     MindMapElement element;
     Path triangle = new Path();
 
@@ -34,10 +36,16 @@ public class ElementView extends View {
         paint_fill.setAntiAlias(true);
         paint_fill.setStyle(Paint.Style.FILL);
         paint_fill.setColor(element.getColor());
+        paint.setAntiAlias(true);
+        paint.setColor(Color.BLACK);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        paint.setTextSize(24f);
+        paint.setTextAlign(Paint.Align.CENTER);
         paint_stroke.setAntiAlias(true);
         paint_stroke.setStyle(Paint.Style.STROKE);
         paint_stroke.setColor(Color.BLACK);
         paint_stroke.setStrokeWidth(4);
+
     }
 
     @Override
@@ -52,16 +60,19 @@ public class ElementView extends View {
             case Shape.CIRCLE:
                 canvas.drawCircle(getWidth() / 2, getHeight() / 2, element.getHeight() / 2 - 4, paint_fill);
                 canvas.drawCircle(getWidth() / 2, getHeight() / 2, element.getHeight() / 2 - 4, paint_stroke);
+                canvas.drawText(element.getText(), element.getWidth() / 2, element.getHeight() / 2, paint);
                 break;
 
             case Shape.TRIANGLE:
                 canvas.drawPath(triangle, paint_fill);
                 canvas.drawPath(triangle, paint_stroke);
+                canvas.drawText(element.getText(), element.getWidth() / 2, (element.getHeight() / 3) * 2, paint);
                 break;
 
             case Shape.RECTANGLE:
                 canvas.drawRect(4, 4, getWidth() - 4, getHeight() - 4, paint_fill);
                 canvas.drawRect(4, 4, getWidth() - 4, getHeight() - 4, paint_stroke);
+                canvas.drawText(element.getText(), element.getWidth() / 2, element.getHeight() / 2, paint);
                 break;
         }
         super.onDraw(canvas);

@@ -1,6 +1,7 @@
 package com.example.veek.mindmap.model;
 
 import android.graphics.Color;
+import android.util.Pair;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,20 +12,25 @@ import java.util.Random;
  */
 public class MindMapModel implements Serializable{
     ArrayList<MindMapElement> elements = new ArrayList<>();
+    ArrayList<Pair> relations = new ArrayList<>();
     long id;
     String name;
     int backgroundColor;
 
-//    public MindMapModel(ArrayList<MindMapElement> elements, long id, int backgroundColor) {
-//        this.elements = elements;
-//        this.id = id;
-//        this.backgroundColor = backgroundColor;
-//    }
+
 
     public MindMapModel(String name, long id) {
         this.id = id;
         this.name = name;
         this.backgroundColor = Color.WHITE;
+    }
+
+    public void addRelation (long id1, long id2){
+        relations.add(new Pair(id1, id2));
+    }
+
+    public ArrayList<Pair> getRelations() {
+        return relations;
     }
 
     public MindMapElement getElementById(long id){
@@ -56,6 +62,25 @@ public class MindMapModel implements Serializable{
 
     public int getBackgroundColor() {
         return backgroundColor;
+    }
+
+    public class Pair implements Serializable{
+        long first;
+        long second;
+
+        public Pair(long first, long
+                     second){
+            this.first = first;
+            this.second = second;
+        }
+
+        public long getFirst() {
+            return first;
+        }
+
+        public long getSecond() {
+            return second;
+        }
     }
 }
 

@@ -46,7 +46,7 @@ public class MindMapViewFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final float x,y;
+        final float x, y;
         elementViewGroup = (ElementContainer) rootView.findViewById(R.id.elementContainer);
         if (mmModel != null) {
             elementViewGroup.setMmModel(mmModel);
@@ -55,57 +55,7 @@ public class MindMapViewFragment extends Fragment {
                 elementViewGroup.addElement(element);
             }
         }
-
-        FloatingActionButton fabAdd = (FloatingActionButton) rootView.findViewById(R.id.fab_add);
-        fabAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                final View dView = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_el, null);
-                final int[] shape = {0};
-                final CharSequence[] shapes = {" Rectangle "," Circle "," Triangle "};
-                builder.setSingleChoiceItems(shapes, -1, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
-                                    case 0:
-                                        shape[0] = Shape.RECTANGLE;
-                                        break;
-
-                                    case 1:
-                                        shape[0] = Shape.CIRCLE;
-                                        break;
-
-                                    case 2:
-                                        shape[0] = Shape.TRIANGLE;
-                                        break;
-
-                                }
-                            }
-                        })
-                        .setTitle("Adding element")
-                        .setCancelable(true)
-                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                MindMapElement element = new MindMapElement(1, "13", shape[0], Color.BLUE, 330, 330, 322, 322);
-                                mmModel.getElements().add(element);
-                                elementViewGroup.addElement(element);
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-
-            }
-        });
-
     }
-
 
 
     @Override

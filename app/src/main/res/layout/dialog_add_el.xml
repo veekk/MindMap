@@ -28,4 +28,5 @@
             android:text="tr"
             android:id="@+id/rbTriangle" />
     </RadioGroup>
+
 </LinearLayout>

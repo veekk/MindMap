@@ -5,7 +5,9 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,12 +28,14 @@ import java.util.ArrayList;
 
 public class MindMapAdapter extends RecyclerView.Adapter<MindMapAdapter.MapViewHolder> {
 
+    private final View rootView;
     ArrayList<ListModel> content = new ArrayList<>();
     Activity context;
     CustomFragmentManager fragmentManager = CustomFragmentManager.getInstance();
 
-    public MindMapAdapter(Activity context){
+    public MindMapAdapter(Activity context, View view){
         this.context = context;
+        this.rootView = view;
     }
 
 
@@ -42,7 +46,7 @@ public class MindMapAdapter extends RecyclerView.Adapter<MindMapAdapter.MapViewH
     }
 
     @Override
-    public void onBindViewHolder(MapViewHolder holder, int position) {
+    public void onBindViewHolder(MapViewHolder holder, final int position) {
         final ListModel model = content.get(position);
         holder.tvRow.setText(model.text);
         holder.tvID.setText("ID: " + model.id);
@@ -54,11 +58,47 @@ public class MindMapAdapter extends RecyclerView.Adapter<MindMapAdapter.MapViewH
                 context.startActivity(intent);
 
 
-
             }
         });
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                final int pos = viewHolder.getAdapterPosition();
+                final ListModel model = content.get(pos);
+
+                Snackbar.make(rootView, "DELETED MOTHERF", Snackbar.LENGTH_LONG).setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        if (event != DISMISS_EVENT_ACTION && event != DISMISS_EVENT_MANUAL) {
+                            Serializabler.removeObject(model.id, context);
+                        }
+                    }
+                }).setAction("Restore", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        content.add(pos, model);
+                        notifyItemInserted(pos);
+                    }
+                }).show();
+
+                content.remove(pos);
+                notifyItemRemoved(pos);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchHelperCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
 
     @Override
     public int getItemCount() {

@@ -5,6 +5,7 @@ import android.util.Base64;
 
 import com.example.veek.mindmap.model.MindMapModel;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,5 +33,11 @@ public class Serializabler {
         FileInputStream fis = context.openFileInput(filename);
         ObjectInputStream oin = new ObjectInputStream(fis);
         return (MindMapModel) oin.readObject();
+    }
+
+    public static void removeObject(long id, Context context){
+        String filenameReal = String.valueOf(id) + "_" + AccountManager.getInstance().getCurrentAccount().getMapNameById(id);
+        String filenameCoded = Base64.encodeToString(filenameReal.getBytes(), Base64.URL_SAFE);
+        context.getFileStreamPath(filenameCoded).delete();
     }
 }

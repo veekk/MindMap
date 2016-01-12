@@ -7,4 +7,9 @@ public interface Shape {
     int RECTANGLE = 0;
     int CIRCLE = 1;
     int TRIANGLE = 2;
+    int SMALL = 150;
+    int MEDIUM = 200;
+    int BIG = 250;
+
+
 }

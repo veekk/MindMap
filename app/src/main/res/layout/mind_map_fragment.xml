@@ -14,17 +14,6 @@
         android:id="@+id/elementContainer">
     </com.example.veek.mindmap.util.ElementContainer>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="15dp"
-        android:clickable="true"
-        app:layout_anchor="@id/fragment_layout"
-        app:layout_anchorGravity="bottom|right|end"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/ic_plus_white_24dp"
-       />
+
 
 </FrameLayout>
