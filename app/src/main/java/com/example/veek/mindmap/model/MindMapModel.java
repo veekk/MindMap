@@ -29,6 +29,10 @@ public class MindMapModel implements Serializable{
         relations.add(new Pair(id1, id2));
     }
 
+    public  void removeRelation (long id1){
+        relations.remove(relations.contains(id1));
+    }
+
     public ArrayList<Pair> getRelations() {
         return relations;
     }
@@ -47,6 +51,11 @@ public class MindMapModel implements Serializable{
         long id = System.currentTimeMillis();
         elements.add(new MindMapElement(id, text, color, shape, x, y, width, height));
     }
+
+    public void delElement(long id){
+        elements.remove(getElementById(id));
+    }
+
 
     public long getId() {
         return id;

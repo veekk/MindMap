@@ -18,6 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MindMapViewActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape"></activity>
     </application>
 

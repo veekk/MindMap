@@ -2,6 +2,7 @@ package com.example.veek.mindmap;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Window;
 
 import com.example.veek.mindmap.fragment.MindMapViewFragment;
 import com.example.veek.mindmap.util.CustomFragmentManager;

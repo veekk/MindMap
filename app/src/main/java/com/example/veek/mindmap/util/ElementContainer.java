@@ -6,25 +6,27 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.renderscript.Element;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.veek.mindmap.R;
 import com.example.veek.mindmap.descr.Shape;
 import com.example.veek.mindmap.model.MindMapElement;
 import com.example.veek.mindmap.model.MindMapModel;
+import com.larswerkman.lobsterpicker.sliders.LobsterOpacitySlider;
+import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
 
-import java.util.ArrayList;
 
 /**
  * Crafted by veek on 21.12.15 with love ♥
@@ -37,6 +39,7 @@ public class ElementContainer extends FrameLayout {
     boolean isAddingRelation = false;
     long idFirst, idSecond;
     Paint paint = new Paint();
+
 
     public ElementContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -55,6 +58,7 @@ public class ElementContainer extends FrameLayout {
         final ElementView elementView = new ElementView(context, element);
         elementView.setX(element.getX());
         elementView.setY(element.getY());
+        currentElement = elementView;
         this.addView(elementView);
     }
 
@@ -63,121 +67,76 @@ public class ElementContainer extends FrameLayout {
         element.setY((int) y - element.getHeight() / 2);
     }
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         final float x, y;
-        final int width, height;
         x = event.getX();
         y = event.getY();
-        width = 100;
-        height = 100;
         detector.onTouchEvent(event);
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN: // нажатие
                 currentElement = getTouchedElement(event.getX(), event.getY());
                if (!isAddingRelation) {
                    if (currentElement == null) {
-                       final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                       final int[] shape = {0};
-                       final int[] color = {0};
+                       final int[] shape = new int[1];
                        final int[] size = {0};
-                       final String[] text = new String[1];
-                       final EditText input = new EditText(context);
-                       final CharSequence[] shapes = {" Rectangle ", " Circle ", " Triangle "};
-                       final CharSequence[] colors = {" Red ", " Green ", " Blue ", " Yellow "};
-                       final CharSequence[] sizes = {" Small ", " Medium ", " Big "};
-                       builder.setSingleChoiceItems(shapes, -1, new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialog, int which) {
-                               switch (which) {
-                                   case 0:
-                                       shape[0] = Shape.RECTANGLE;
-                                       break;
 
-                                   case 1:
-                                       shape[0] = Shape.CIRCLE;
-                                       break;
+                       LinearLayout view = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.dialog_edit_el, null);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                       final EditText editText = (EditText) view.findViewById(R.id.etEditEl);
 
-                                   case 2:
-                                       shape[0] = Shape.TRIANGLE;
-                                       break;
+                       final RadioButton rbtC = (RadioButton) view.findViewById(R.id.rbtC);
+                       final RadioButton rbtR = (RadioButton) view.findViewById(R.id.rbtR);
+                       final RadioButton rbtT = (RadioButton) view.findViewById(R.id.rbtT);
 
-                               }
-                           }
-                       })
-                               .setTitle("Adding element")
-                               .setCancelable(true)
-                               .setPositiveButton("Next", new DialogInterface.OnClickListener() {
+                       final RadioButton rbtSmall = (RadioButton) view.findViewById(R.id.rbtSmall);
+                       final RadioButton rbtMed = (RadioButton) view.findViewById(R.id.rbtMed);
+                       final RadioButton rbtBig = (RadioButton) view.findViewById(R.id.rbtBig);
+
+                       final RadioGroup rGroupShape = (RadioGroup) view.findViewById(R.id.rGroupShape);
+                       final RadioGroup rGroupSize = (RadioGroup) view.findViewById(R.id.rGroupSize);
+
+
+                       final LobsterShadeSlider shadeSlider = (LobsterShadeSlider) view.findViewById(R.id.shadeslider);
+                       LobsterOpacitySlider opacitySlider = (LobsterOpacitySlider) view.findViewById(R.id.opacityslider);
+
+                       shadeSlider.addDecorator(opacitySlider);
+
+                       builder.setView(view)
+                               .setTitle("Add element")
+                               .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                                    @Override
                                    public void onClick(DialogInterface dialog, int which) {
-                                       AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                                       builder.setSingleChoiceItems(colors, -1, new DialogInterface.OnClickListener() {
-                                           @Override
-                                           public void onClick(DialogInterface dialog, int which) {
-                                               switch (which){
-                                                   case 0:
-                                                       color[0] = Color.RED;
-                                                       break;
-                                                   case 1:
-                                                       color[0] = Color.GREEN;
-                                                       break;
-                                                   case 2:
-                                                       color[0] = Color.BLUE;
-                                                       break;
-                                                   case 3:
-                                                       color[0] = Color.YELLOW;
-                                                       break;
-                                               }
-                                           }
-                                       })
-                                               .setPositiveButton("Next", new DialogInterface.OnClickListener() {
-                                                   @Override
-                                                   public void onClick(DialogInterface dialog, int which) {
-                                                       AlertDialog.Builder builder2 = new AlertDialog.Builder(context);
-                                                       builder2.setSingleChoiceItems(sizes, -1, new DialogInterface.OnClickListener() {
-                                                           @Override
-                                                           public void onClick(DialogInterface dialog, int which) {
-                                                               switch (which){
-                                                                   case 0:
-                                                                       size[0] = Shape.SMALL;
-                                                                       break;
-                                                                   case 1:
-                                                                       size[0] = Shape.MEDIUM;
-                                                                       break;
-                                                                   case 2:
-                                                                       size[0] = Shape.BIG;
-                                                                       break;
-                                                               }
-                                                           }
-                                                       })
-                                                               .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                                                                   @Override
-                                                                   public void onClick(DialogInterface dialog, int which) {
-                                                                       AlertDialog.Builder builder3 = new AlertDialog.Builder(context);
-                                                                       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                                                                               LinearLayout.LayoutParams.MATCH_PARENT,
-                                                                               LinearLayout.LayoutParams.MATCH_PARENT);
-                                                                       input.setLayoutParams(lp);
-                                                                       builder3.setView(input)
-                                                                               .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                                                                                   @Override
-                                                                                   public void onClick(DialogInterface dialog, int which) {
-                                                                                       text[0] = input.getText().toString();
-                                                                                       MindMapElement element = new MindMapElement(System.currentTimeMillis(), text[0], shape[0], color[0],
-                                                                                               (int) (x - size[0] / 2), (int) (y - size[0] / 2), size[0], size[0]);
-                                                                                       mmModel.getElements().add(element);
-                                                                                       addElement(element);
-                                                                                   }
-                                                                               })
-                                                                               .show();
+                                       switch (rGroupShape.getCheckedRadioButtonId()) {
+                                           case R.id.rbtR:
+                                               shape[0] = Shape.RECTANGLE;
+                                               break;
 
-                                                                   }
-                                                               })
-                                                               .show();
+                                           case R.id.rbtC:
+                                               shape[0] = Shape.CIRCLE;
+                                               break;
 
-                                                   }
-                                               })
-                                               .show();
+                                           case R.id.rbtT:
+                                               shape[0] = Shape.TRIANGLE;
+                                               break;
+                                       }
+                                       switch (rGroupSize.getCheckedRadioButtonId()) {
+                                           case R.id.rbtSmall:
+                                               size[0] = Shape.SMALL;
+                                               break;
+                                           case R.id.rbtMed:
+                                               size[0] = Shape.MEDIUM;
+                                               break;
+                                           case R.id.rbtBig:
+                                               size[0] = Shape.BIG;
+                                               break;
+                                       }
+                                       MindMapElement element = new MindMapElement(System.currentTimeMillis(), editText.getText().toString(), shape[0], shadeSlider.getColor(),
+                                               (int) (x - size[0] / 2), (int) (y - size[0] / 2), size[0], size[0]);
+                                       mmModel.getElements().add(element);
+                                       addElement(element);
+                                       dialog.dismiss();
                                    }
                                })
                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -186,7 +145,7 @@ public class ElementContainer extends FrameLayout {
                                        dialog.dismiss();
                                    }
                                })
-                               .show();
+                                       .show();
                    }
                }
                 return true;
@@ -195,16 +154,24 @@ public class ElementContainer extends FrameLayout {
                 Log.d("motion", "onTouchEvent: ");
                 if (!isAddingRelation) {
                     if (currentElement != null) {
-                        moveElement(currentElement, event.getX(), event.getY());
                         MindMapElement e = mmModel.getElementById(currentElement.getElementId());
-                        e.setY((int) event.getY() - e.getWidth() / 2);
-                        e.setX((int) event.getX() - e.getHeight() / 2);
+                        float xx, yy;
+                        if (event.getX() <= e.getWidth() / 2) xx = - 1 + e.getWidth() / 2; else
+                            if (event.getX() >= getWidth() - e.getWidth() / 2)
+                                xx = getWidth() + 1- e.getWidth() / 2; else xx = event.getX();
+                        if (event.getY() <= e.getHeight() / 2) yy = -1 + e.getHeight() / 2; else
+                            if (event.getY() >= getHeight() - e.getHeight() / 2)
+                                yy = getHeight() + 1 - e.getHeight() / 2; else yy = event.getY();
+                        moveElement(currentElement, xx, yy);
+                        e.setY((int) yy - e.getWidth() / 2);
+                        e.setX((int) xx - e.getHeight() / 2);
                     }
                 }
                 invalidate();
                 return true;
 
             case MotionEvent.ACTION_UP:
+                if (currentElement != null){
                 if (isAddingRelation) {
                     if (idFirst != currentElement.getElementId()) {
                         idSecond = currentElement.getElementId();
@@ -212,6 +179,12 @@ public class ElementContainer extends FrameLayout {
                         idFirst = -1;
                         idSecond = -1;
                         isAddingRelation = false;
+                    }
+                }
+                } else {
+                    if (isAddingRelation) {
+                        isAddingRelation = false;
+                        Toast.makeText(context, "You can't add relation to empty space, try again", Toast.LENGTH_SHORT).show();
                     }
                 }
                 currentElement = null;
@@ -245,11 +218,151 @@ public class ElementContainer extends FrameLayout {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            Toast.makeText(context, "Add new relation by tapping on another huj", Toast.LENGTH_SHORT).show();
+
             if (currentElement != null) {
-                isAddingRelation = true;
+
                 idFirst = currentElement.getElementId();
+
+                final int[] shape = new int[1];
+                final int[] size = {0};
+
+                LinearLayout view = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.dialog_edit_el, null);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                final ElementView ev = currentElement;
+                final MindMapElement ee = mmModel.getElementById(ev.getElementId());
+                final EditText editText = (EditText) view.findViewById(R.id.etEditEl);
+
+                final RadioButton rbtC = (RadioButton) view.findViewById(R.id.rbtC);
+                final RadioButton rbtR = (RadioButton) view.findViewById(R.id.rbtR);
+                final RadioButton rbtT = (RadioButton) view.findViewById(R.id.rbtT);
+
+                final RadioButton rbtSmall = (RadioButton) view.findViewById(R.id.rbtSmall);
+                final RadioButton rbtMed = (RadioButton) view.findViewById(R.id.rbtMed);
+                final RadioButton rbtBig = (RadioButton) view.findViewById(R.id.rbtBig);
+
+                final RadioGroup rGroupShape = (RadioGroup) view.findViewById(R.id.rGroupShape);
+                final RadioGroup rGroupSize = (RadioGroup) view.findViewById(R.id.rGroupSize);
+
+
+                final LobsterShadeSlider shadeSlider = (LobsterShadeSlider) view.findViewById(R.id.shadeslider);
+                LobsterOpacitySlider opacitySlider = (LobsterOpacitySlider) view.findViewById(R.id.opacityslider);
+
+                shadeSlider.addDecorator(opacitySlider);
+                shadeSlider.setColor(ee.getColor());
+                editText.setText(ee.getText());
+                switch (ee.getShape()){
+                    case Shape.CIRCLE:
+                        rbtC.setChecked(true);
+                        break;
+                    case Shape.RECTANGLE:
+                        rbtR.setChecked(true);
+                        break;
+                    case Shape.TRIANGLE:
+                        rbtT.setChecked(true);
+                        break;
+                }
+                switch (ee.getHeight()){
+                    case Shape.SMALL:
+                        rbtSmall.setChecked(true);
+                        break;
+                    case Shape.MEDIUM:
+                        rbtMed.setChecked(true);
+                        break;
+                    case Shape.BIG:
+                        rbtBig.setChecked(true);
+                        break;
+                }
+
+                builder.setView(view)
+                        .setTitle("Edit element")
+                        .setNegativeButton("Save & add relation", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                isAddingRelation = true;
+                                switch (rGroupShape.getCheckedRadioButtonId()){
+                                    case R.id.rbtR:
+                                        shape[0] = Shape.RECTANGLE;
+                                        break;
+
+                                    case R.id.rbtC:
+                                        shape[0] = Shape.CIRCLE;
+                                        break;
+
+                                    case R.id.rbtT:
+                                        shape[0] = Shape.TRIANGLE;
+                                        break;
+                                }
+                                switch (rGroupSize.getCheckedRadioButtonId()){
+                                    case R.id.rbtSmall:
+                                        size[0] = Shape.SMALL;
+                                        break;
+                                    case R.id.rbtMed:
+                                        size[0] = Shape.MEDIUM;
+                                        break;
+                                    case R.id.rbtBig:
+                                        size[0] = Shape.BIG;
+                                        break;
+                                }
+                                ee.setText(editText.getText().toString());
+                                ee.setColor(shadeSlider.getColor());
+                                ee.setHeight(size[0]);
+                                ee.setWidth(size[0]);
+                                ee.setShape(shape[0]);
+                                ev.invalidate();
+                                dialog.dismiss();
+                                Toast.makeText(context, "Add new relation by tapping on another element", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (rGroupShape.getCheckedRadioButtonId()){
+                                    case R.id.rbtR:
+                                        shape[0] = Shape.RECTANGLE;
+                                        break;
+
+                                    case R.id.rbtC:
+                                        shape[0] = Shape.CIRCLE;
+                                        break;
+
+                                    case R.id.rbtT:
+                                        shape[0] = Shape.TRIANGLE;
+                                        break;
+                                }
+                                switch (rGroupSize.getCheckedRadioButtonId()){
+                                    case R.id.rbtSmall:
+                                        size[0] = Shape.SMALL;
+                                        break;
+                                    case R.id.rbtMed:
+                                        size[0] = Shape.MEDIUM;
+                                        break;
+                                    case R.id.rbtBig:
+                                        size[0] = Shape.BIG;
+                                        break;
+                                }
+                                ee.setText(editText.getText().toString());
+                                ee.setColor(shadeSlider.getColor());
+                                ee.setHeight(size[0]);
+                                ee.setWidth(size[0]);
+                                ee.setShape(shape[0]);
+                                ev.invalidate();
+
+                            }
+                        })
+                        .setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mmModel.removeRelation(ev.getElementId());
+                                mmModel.delElement(ev.getElementId());
+                                removeView(ev);
+
+                            }
+                        })
+
+                        .show();
+
             }
+
 
         }
 
@@ -274,10 +387,13 @@ public class ElementContainer extends FrameLayout {
 
         for (MindMapModel.Pair relations :
                 mmModel.getRelations()) {
-            MindMapElement eFirst = mmModel.getElementById(relations.getFirst());
-            MindMapElement eSecond = mmModel.getElementById(relations.getSecond());
-            canvas.drawLine(eFirst.getX() + eFirst.getWidth() / 2, eFirst.getY() + eFirst.getHeight() / 2,
-                    eSecond.getX() + eSecond.getWidth() / 2, eSecond.getY() + eSecond.getHeight() / 2, paint);
+
+                MindMapElement eFirst = mmModel.getElementById(relations.getFirst());
+                MindMapElement eSecond = mmModel.getElementById(relations.getSecond());
+            if (eFirst != null && eSecond != null) {
+                canvas.drawLine(eFirst.getX() + eFirst.getWidth() / 2, eFirst.getY() + eFirst.getHeight() / 2,
+                        eSecond.getX() + eSecond.getWidth() / 2, eSecond.getY() + eSecond.getHeight() / 2, paint);
+            }
         }
         super.onDraw(canvas);
     }

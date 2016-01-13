@@ -21,6 +21,8 @@ import com.example.veek.mindmap.R;
 import com.example.veek.mindmap.model.Account;
 import com.example.veek.mindmap.model.MindMapModel;
 import com.example.veek.mindmap.util.AccountManager;
+import com.example.veek.mindmap.util.CustomFragmentManager;
+import com.example.veek.mindmap.util.CustomPreferenceManager;
 import com.example.veek.mindmap.util.MindMapAdapter;
 import com.example.veek.mindmap.util.Serializabler;
 
@@ -34,6 +36,8 @@ import java.util.ArrayList;
 public class MindMapListFragment extends Fragment {
     private MindMapAdapter adapter;
     View rootView;
+    CustomFragmentManager fragmentManager = CustomFragmentManager.getInstance();
+    CustomPreferenceManager preferenceManager = CustomPreferenceManager.getInstance();
 
     @Nullable
     @Override
@@ -91,6 +95,12 @@ public class MindMapListFragment extends Fragment {
                             }
                         })
                         .show();
+                break;
+            case R.id.menu_logout:
+                preferenceManager.init(getActivity().getApplicationContext(), "GlobalPreferences");
+                preferenceManager.putState("Auto-Login", false);
+                fragmentManager.setFragment(new LoginScreen(), false);
+                break;
         }
         return true;
     }

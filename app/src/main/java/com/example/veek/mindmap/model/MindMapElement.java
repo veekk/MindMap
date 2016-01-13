@@ -26,6 +26,14 @@ public class MindMapElement implements Serializable{
         return width;
     }
 
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     public MindMapElement(long id, String text, int shape, int color, int x, int y, int width, int height) {
         this.id = id;
         this.text = text;

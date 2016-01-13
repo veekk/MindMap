@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etEditEl"
+        android:layout_gravity="center_horizontal"
+        android:inputType="text" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:id="@+id/rGroupShape">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Circle"
+            android:id="@+id/rbtC"
+            android:layout_gravity="right"
+            android:checked="true" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rectangle"
+            android:id="@+id/rbtR"
+            android:checked="false" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Triangle"
+            android:id="@+id/rbtT"
+            android:layout_gravity="center_horizontal"
+            android:checked="false" />
+
+    </RadioGroup>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:id="@+id/rGroupSize">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Small"
+            android:id="@+id/rbtSmall"
+            android:checked="false" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medium"
+            android:id="@+id/rbtMed"
+            android:checked="true" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Big"
+            android:id="@+id/rbtBig"
+            android:checked="false" />
+    </RadioGroup>
+
+    <com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
+        android:id="@+id/shadeslider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal" />
+
+    <com.larswerkman.lobsterpicker.sliders.LobsterOpacitySlider
+        android:id="@+id/opacityslider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

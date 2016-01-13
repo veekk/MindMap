@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:screenOrientation="landscape"
-    style="@style/AppTheme.NoActionBar"
+    style="@style/Theme.AppCompat.Light.NoActionBar"
     android:id="@+id/fragment_layout"
     android:layout_height="match_parent">
 
