@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -221,6 +222,8 @@ public class ElementContainer extends FrameLayout {
 
             if (currentElement != null) {
 
+
+                Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE); v.vibrate(50);
                 idFirst = currentElement.getElementId();
 
                 final int[] shape = new int[1];
@@ -250,6 +253,7 @@ public class ElementContainer extends FrameLayout {
                 shadeSlider.addDecorator(opacitySlider);
                 shadeSlider.setColor(ee.getColor());
                 editText.setText(ee.getText());
+                editText.setSelection(ee.getText().length());
                 switch (ee.getShape()){
                     case Shape.CIRCLE:
                         rbtC.setChecked(true);
