@@ -34,10 +34,7 @@ public class ElementView extends View {
         super(context);
         params = new ViewGroup.LayoutParams(element.getWidth(), element.getHeight());
         this.setLayoutParams(params);
-
         this.element = element;
-
-
     }
 
     @Override
